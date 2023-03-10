@@ -1,0 +1,145 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'com.google.devtools.ksp'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-parcelize'
+}
+
+android {
+    namespace 'com.jordy.note'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.jordy.note"
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.4.2'
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+
+    // Hilt dependencies ---------------------------------------------------------------------------
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    // For instrumentation tests
+    androidTestImplementation  "com.google.dagger:hilt-android-testing:$hilt_version"
+    kaptAndroidTest "com.google.dagger:hilt-compiler:$hilt_version"
+    // For local unit tests
+    testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
+    kaptTest "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // Room dependencies----------------------------------------------------------------------------
+    def room_version = "2.5.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // To use Kotlin annotation processing tool (kapt)
+    //kapt "androidx.room:room-compiler:$room_version"
+    // To use Kotlin Symbol Processing (KSP)
+    ksp "androidx.room:room-compiler:$room_version"
+    // optional - Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
+    // optional - Paging 3 Integration
+    implementation "androidx.room:room-paging:$room_version"
+
+
+
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.0'
+    implementation 'androidx.activity:activity-compose:1.6.1'
+    // Optional - Integration with ViewModels
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0'
+
+    // Compose dependencies ------------------------------------------------------------------------
+    def composeBom = platform('androidx.compose:compose-bom:2023.01.00')
+    implementation composeBom
+    androidTestImplementation composeBom
+    // Material Design 3
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.ui:ui'
+    // Android Studio Preview support
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    // custom design system based on Foundation)
+    implementation 'androidx.compose.material:material-icons-core'
+    // Optional - Add full set of material icons
+    implementation 'androidx.compose.material:material-icons-extended'
+    // Optional - Add window size utils
+    implementation 'androidx.compose.material3:material3-window-size-class'
+
+    // Lottie dependency----------------------------------------------------------------------------
+    def lottieVersion = "5.2.0"
+    implementation "com.airbnb.android:lottie-compose:$lottieVersion"
+
+
+    //Test dependencies ----------------------------------------------------------------------------
+
+    // UI Tests-----------------------------------------------------------------------------
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    testImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    // Robolectric
+    def robolectric_version = "4.9.2"
+    testImplementation "org.robolectric:robolectric:$robolectric_version"
+
+    // Unit Test dependencies --------------------------------------------------------------
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation "androidx.test:core:1.5.0"
+
+    // Turbine
+    testImplementation 'app.cash.turbine:turbine:0.12.0'
+
+    // Mockk
+    def mockk_version = "1.13.2"
+    testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation "io.mockk:mockk-android:$mockk_version"
+    testImplementation "io.mockk:mockk-agent:$mockk_version"
+
+    // Integration test dependencies -------------------------------------------------------
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+//            androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+//            debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+//            debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
+}
+
