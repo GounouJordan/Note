@@ -1,8 +1,8 @@
 package com.jordy.note.model.datasource
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.jordy.note.model.entities.NoteEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDataSource {
@@ -11,7 +11,7 @@ interface NoteDataSource {
     suspend fun insert(noteEntity: NoteEntity): Long
 
     @Query("select * from notes")
-    fun getAll(): Flow<List<NoteEntity>>
+    fun getAll(): PagingSource<Int, NoteEntity>
 
     @Update
     suspend fun update(noteEntity: NoteEntity)
