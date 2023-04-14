@@ -1,7 +1,8 @@
 package com.jordy.note.data
 
 import android.content.Context
-import androidx.room.Room
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
@@ -16,6 +17,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
@@ -28,7 +30,7 @@ class NoteDataSourceTest {
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, NoteDB::class.java).build()
+        db = TestUtils.provideAppDb(context)
         noteDataSource = db.getNoteDataSource()
     }
 
@@ -39,12 +41,13 @@ class NoteDataSourceTest {
 
     @Test
     fun insertUserIntoDb() = runTest {
+        val date = Calendar.Builder().setDate(2023, 3, 12).build().time
         var entity = NoteEntity(
             id = 0,
             title = "",
             content = "some text",
-            createdAt = 125,
-            modifiedAt = 125
+            createdAt = date,
+            modifiedAt = date
         )
         val id = noteDataSource.insert(entity)
         entity = entity.copy(id = id)
@@ -56,22 +59,27 @@ class NoteDataSourceTest {
     @Test
     fun getAllNotes() = runTest {
         val entities = mutableListOf<NoteEntity>()
+        val date = Calendar.Builder().setDate(2023, 3, 12).build().time
         for (i in 1..5) {
             entities.add(
                 NoteEntity(
                     id = i.toLong(),
                     title = "Title $i",
                     content = "content $i",
-                    createdAt = 125 + i * 1_000L,
-                    modifiedAt = 125 + i * 1_000L
+                    createdAt = date,
+                    modifiedAt = date
                 )
             )
         }
         entities.forEach {
             noteDataSource.insert(it)
         }
-
-        noteDataSource.getAll().test {
+        val pager = Pager(
+            config = PagingConfig(pageSize = 10)
+        ){
+            noteDataSource.getAll()
+        }
+        pager.flow.test {
             assertEquals(entities as List<NoteEntity>, awaitItem())
             cancel()
         }
@@ -80,12 +88,13 @@ class NoteDataSourceTest {
 
     @Test
     fun deleteNote() = runTest {
+        val date = Calendar.Builder().setDate(2023, 3, 12).build().time
         val note = NoteEntity(
             id = 0,
             title = "",
             content = "some text",
-            createdAt = 125,
-            modifiedAt = 125
+            createdAt = date,
+            modifiedAt = date
         )
 
         val id = noteDataSource.insert(note)
