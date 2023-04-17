@@ -1,12 +1,12 @@
 package com.jordy.note.repository
 
+import androidx.paging.PagingSource
 import com.jordy.note.model.datasource.NoteDataSource
 import com.jordy.note.model.entities.NoteEntity
-import kotlinx.coroutines.flow.Flow
 
 
 interface NoteRepository {
-    fun getAll(): Flow<List<NoteEntity>>
+    fun getAll(): PagingSource<Int, NoteEntity>
     suspend fun insert(noteEntity: NoteEntity): Long
     suspend fun update(noteEntity: NoteEntity)
     suspend fun delete(noteEntity: NoteEntity)
@@ -15,8 +15,8 @@ interface NoteRepository {
 
 class NoteRepositoryImpl(
     private val noteDataSource: NoteDataSource
-): NoteRepository {
-    override fun getAll(): Flow<List<NoteEntity>> = noteDataSource.getAll()
+) : NoteRepository {
+    override fun getAll(): PagingSource<Int, NoteEntity> = noteDataSource.getAll()
 
     override suspend fun insert(noteEntity: NoteEntity): Long = noteDataSource.insert(noteEntity)
 
