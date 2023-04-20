@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-    id 'com.google.devtools.ksp'
+//    id 'com.google.devtools.ksp'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
 }
@@ -72,9 +72,9 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     // To use Kotlin annotation processing tool (kapt)
-    //kapt "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
     // To use Kotlin Symbol Processing (KSP)
-    ksp "androidx.room:room-compiler:$room_version"
+    // ksp "androidx.room:room-compiler:$room_version"
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
     // optional - Paging 3 Integration
@@ -121,6 +121,14 @@ dependencies {
     def accompanist_version = '0.30.1'
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
 
+    // Paging dependencies -------------------------------------------------------------------------
+    def paging_version = "3.1.1"
+    implementation "androidx.paging:paging-runtime:$paging_version"
+    // alternatively - without Android dependencies for tests
+    testImplementation "androidx.paging:paging-common:$paging_version"
+    // optional - Jetpack Compose integration
+    implementation "androidx.paging:paging-compose:1.0.0-alpha18"
+
 
     //Test dependencies ----------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
@@ -158,4 +166,3 @@ dependencies {
 kapt {
     correctErrorTypes = true
 }
-
